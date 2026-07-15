@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*' # Triggers the build when you push a tag like "v1.0.0"
 
+permissions:
+  contents: write # REQUIRED: Allows the action to upload files to GitHub Releases
+
 jobs:
   release:
     runs-on: ${{ matrix.os }}
