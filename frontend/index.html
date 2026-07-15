@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self';">
+  <title>Folder Architect</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-icon">🗂️</span>
+        <h1>Folder Architect</h1>
+      </div>
+      <div class="path-bar">
+        <input type="text" id="folderPath" placeholder="Select a folder to analyze..." readonly>
+        <button id="browseBtn" class="btn">Browse</button>
+        <button id="scanBtn" class="btn primary" disabled>Scan</button>
+      </div>
+    </header>
+
+    <div class="main">
+      <aside class="sidebar">
+        <div class="panel">
+          <div class="panel-header">
+            <h3>File Types</h3>
+            <div class="panel-actions">
+              <button class="link" id="selectAllExt">All</button>
+              <button class="link" id="deselectAllExt">None</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <input type="text" id="extFilter" class="search-input" placeholder="Filter extensions...">
+            <div id="extensionList" class="extension-list">
+              <p class="hint">Select a folder to load file types.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><h3>Options</h3></div>
+          <div class="panel-body">
+            <label class="checkbox">
+              <input type="checkbox" id="excludeDirs" checked>
+              <span>Exclude dependency directories<br><small>node_modules, .git, venv, dist, build, ...</small></span>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" id="excludeLocks" checked>
+              <span>Exclude lock & binary files<br><small>package-lock.json, *.pyc, .DS_Store, ...</small></span>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" id="collapseDefault" checked>
+              <span>Collapse tree by default</span>
+            </label>
+            <div class="form-row">
+              <label for="maxDepth">Max depth:</label>
+              <input type="number" id="maxDepth" value="0" min="0" max="50" title="0 = unlimited">
+              <span class="hint-inline">0 = ∞</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><h3>Export</h3></div>
+          <div class="panel-body">
+            <button id="copyTreeBtn" class="btn full" disabled>Copy as Text Tree</button>
+            <button id="copyJsonBtn" class="btn full" disabled>Copy as JSON</button>
+            <div class="divider"></div>
+            <button id="copyImageBtn" class="btn full" disabled>Copy Canvas as Image</button>
+            <button id="exportPngBtn" class="btn full" disabled>Save Canvas as PNG</button>
+            <button id="exportPdfBtn" class="btn full" disabled>Save as Multi-Page PDF</button>
+          </div>
+        </div>
+      </aside>
+
+      <main class="content">
+        <div class="content-header">
+          <div class="view-toggle">
+            <button id="viewTreeBtn" class="toggle-btn active">Tree View</button>
+            <button id="viewCanvasBtn" class="toggle-btn">Canvas Graph</button>
+          </div>
+          <div class="content-info">
+            <span id="scanTime"></span>
+          </div>
+        </div>
+
+        <div class="view-container">
+          <div id="treeView" class="tree-view">
+            <div class="empty-state">
+              <div class="empty-icon">📂</div>
+              <p>Select a folder and click <strong>Scan</strong> to visualize its architecture.</p>
+            </div>
+          </div>
+          
+          <div id="canvasViewContainer" class="canvas-view-container hidden">
+            <div class="canvas-controls">
+              <button id="zoomOutBtn" class="ctrl-btn" title="Zoom Out">−</button>
+              <span id="zoomLevel" class="zoom-level">100%</span>
+              <button id="zoomInBtn" class="ctrl-btn" title="Zoom In">+</button>
+              <button id="fitScreenBtn" class="ctrl-btn" title="Fit to Screen">⤢</button>
+            </div>
+            
+            <div id="canvasLegend" class="canvas-legend hidden">
+              <div class="legend-header">Canvas Controls</div>
+              
+              <div class="legend-subgroup">Tree Depth Limit</div>
+              <div class="legend-row">
+                <button id="depthDown" class="ctrl-btn small">−</button>
+                <span id="depthValue" class="zoom-level small">All</span>
+                <button id="depthUp" class="ctrl-btn small">+</button>
+              </div>
+
+              <div class="legend-subgroup">Layout Mode</div>
+              <div class="layout-toggle-row">
+                <button id="layoutVertBtn" class="ctrl-btn small active">Vertical</button>
+                <button id="layoutHorizBtn" class="ctrl-btn small">Horizontal</button>
+              </div>
+
+              <div class="legend-hint">Click & drag canvas to pan</div>
+            </div>
+
+            <div class="canvas-empty-state">
+              <div class="empty-icon">🕸️</div>
+              <p>Switch to Tree View to scan a folder.</p>
+            </div>
+            <canvas id="canvasView" class="hidden"></canvas>
+          </div>
+        </div>
+
+        <div id="statusBar" class="status-bar hidden">
+          <span id="folderCount">0 folders</span>
+          <span id="fileCount">0 files</span>
+          <span id="totalSize">0 B</span>
+        </div>
+        
+        <div id="loading" class="loading hidden">
+          <div class="spinner"></div>
+          <p id="loadingText">Scanning...</p>
+        </div>
+      </main>
+    </div>
+  </div>
+  
+  <script src="vendor/jspdf.umd.min.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>

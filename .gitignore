@@ -1,0 +1,7 @@
+node_modules/
+backend/dist/
+backend/build/
+backend/*.spec
+release/
+.DS_Store
+*.log
