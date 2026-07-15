@@ -3,17 +3,14 @@ name: Build and Release
 on:
   push:
     tags:
-      - 'v*' # Triggers the build when you push a tag like "v1.0.0"
+      - 'v*'
 
 permissions:
-  contents: write # REQUIRED: Allows the action to upload files to GitHub Releases
+  contents: write
 
 jobs:
   release:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ubuntu-latest
 
     steps:
       - name: Check out Git repository
@@ -46,9 +43,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: folder-architect-${{ matrix.os }}
+          name: folder-architect-linux
           path: |
             release/*.deb
             release/*.AppImage
-            release/*.exe
-            release/*.dmg
